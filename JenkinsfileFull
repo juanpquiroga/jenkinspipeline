@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+        parameters { 
+         string(name: 'tomcat_dev', defaultValue: 'localhost:8090', description: 'Staging Server')
+         string(name: 'tomcat_prod', defaultValue: 'localhost:9090', description: 'Production Server')
+    } 
+
+    triggers {
+         pollSCM('* * * * *') // Polling Source Control
+    }
+
+    stage('Build'){
+            steps {
+                sh 'mvn clean package'
+            }
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
+            }
+        }
+
+        stage ('Deployments'){
+            parallel{
+                stage ('Deploy to Staging'){
+                    steps {
+                        bat "cp **/target/*.war C:\devtools\apache-tomcat-8.5.32\webapps"
+                    }
+                }
+
+                stage ("Deploy to Production"){
+                    steps {
+                        bat "cp **/target/*.war C:\devtools\apache-tomcat-8.5.32-prod\webapps"
+                    }
+                }
+            }
+        }
+}
