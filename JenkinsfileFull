@@ -26,13 +26,13 @@ pipeline {
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        bat "cp **/target/*.war C:\devtools\apache-tomcat-8.5.32\webapps"
+                        bat "cp **/target/*.war C:\\devtools\\apache-tomcat-8.5.32\\webapps"
                     }
                 }
 
                 stage ("Deploy to Production"){
                     steps {
-                        bat "cp **/target/*.war C:\devtools\apache-tomcat-8.5.32-prod\webapps"
+                        bat "cp **/target/*.war C:\\devtools\\apache-tomcat-8.5.32-prod\\webapps"
                     }
                 }
             }
